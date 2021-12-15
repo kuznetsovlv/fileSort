@@ -19,6 +19,7 @@ class FileArray final
 	FileArray(const std::string&, Mode, bool);
 	FileArray(const std::string&, Mode);
 	FileArray(const std::string&, bool);
+	FileArray(const std::string&);
 	FileArray(const FileArray&) = delete;
 	FileArray(const FileArray&&) = delete;
 
