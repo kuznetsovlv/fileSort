@@ -113,7 +113,7 @@ int FileArray::next()
 
 bool FileArray::push(int value)
 {
-	if(_mode != TRUNC && !switchMode(OUT))
+	if((_mode == IN || _mode == CLOSE) && !switchMode(APP))
 	{
 		return false;
 	}
