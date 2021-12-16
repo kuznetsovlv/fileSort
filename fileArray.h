@@ -7,13 +7,13 @@ enum Mode {CLOSE, IN, OUT, TRUNC };
 class FileArray final
 {
 	private:
-	const std::fstream _fs;
+	std::fstream _fs;
 	const std::string _name;
 	Mode _mode;
 	bool _tmp;
 	size_t _size;
 
-	void reload();
+	void reload()noexcept;
 
 	public:
 	FileArray(const std::string&, Mode, bool);
@@ -26,13 +26,13 @@ class FileArray final
 	~FileArray();
 
 	bool add(FileArray&);
-	bool empty()const;
-	Mode mode()const;
-	const std::string &name()const;
-	int next()const;
-	bool push(int)const;
-	size_t size()const;
-	bool switchMode(Mode);
+	bool empty()const noexcept;
+	Mode mode()const noexcept;
+	const std::string &name()const noexcept;
+	int next();
+	bool push(int);
+	size_t size()const noexcept;
+	bool switchMode(Mode)noexcept;
 
 	FileArray &operator=(FileArray&) = delete;
 	FileArray &&operator=(FileArray&&) = delete;
