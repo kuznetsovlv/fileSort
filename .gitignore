@@ -1,3 +1,4 @@
 fileSort
 *.o
 *.tmp
+*.txt

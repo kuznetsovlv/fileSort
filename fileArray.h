@@ -2,7 +2,7 @@
 #include <fstream>
 #include<string>
 
-enum Mode {CLOSE, IN, OUT, TRUNC };
+enum Mode {CLOSE, IN, APP, OUT, TRUNC };
 
 class FileArray final
 {
@@ -27,6 +27,7 @@ class FileArray final
 
 	bool add(FileArray&);
 	bool empty()const noexcept;
+	bool finalise();
 	Mode mode()const noexcept;
 	const std::string &name()const noexcept;
 	int next();

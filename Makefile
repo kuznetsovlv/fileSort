@@ -13,4 +13,4 @@ exception.o: exception.h
 
 .PHONY: clean
 clean:
-	-rm -f fileSort *.o *.tmp 2>/dev/null
+	-rm -f fileSort *.o *.tmp *.txt 2>/dev/null

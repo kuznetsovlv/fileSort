@@ -3,7 +3,7 @@
 #include "fileArray.h"
 #include "exception.h"
 
-FileArray::FileArray(const std::string &name, Mode mode, bool tmp):_name(name),_mode(mode),_tmp(tmp)
+FileArray::FileArray(const std::string &name, Mode mode, bool tmp):_name(name),_mode(CLOSE),_tmp(tmp)
 {
 	switchMode(mode);
 	reload();
@@ -23,11 +23,7 @@ FileArray::FileArray(const std::string &name):FileArray(name, CLOSE, false)
 
 FileArray::~FileArray()
 {
-	if(_fs.is_open())
-	{
-		_fs.close();
-	}
-
+	switchMode(CLOSE);
 	if(_tmp)
 	{
 		std::ifstream file(_name);
@@ -81,6 +77,18 @@ Mode FileArray::mode()const noexcept
 	return _mode;
 }
 
+bool FileArray::finalise()
+{
+	if(!switchMode(APP))
+	{
+		return false;
+	}
+
+	_fs << '\n';
+
+	return true;
+}
+
 const std::string &FileArray::name()const noexcept
 {
 	return _name;
@@ -110,7 +118,14 @@ bool FileArray::push(int value)
 		return false;
 	}
 
-	_fs << value << " ";
+	if(_size)
+	{
+		_fs << " ";
+	}
+
+	_fs << value;
+
+	++_size;
 
 	return true;
 }
@@ -138,8 +153,12 @@ bool FileArray::switchMode(Mode mode)noexcept
 			case IN:
 				_fs.open(_name, std::ios::in);
 				break;
+			case APP:
+				_fs.open(_name, std::ios::app);
+				break;
 			case OUT:
 				_fs.open(_name, std::ios::out);
+				_size = 0;
 				break;
 			case TRUNC:
 				_fs.open(_name, std::ios::trunc);
