@@ -1,18 +1,33 @@
-#include "fileArray.h"
+#include <iostream>
+#include <exception>
+#include <cstdlib>
+#include <ctime>
+#include "files.h"
+#include "work.h"
 
-int main()
+int main(int argc, char **args)
 {
-	FileArray arr1("1.tmp", OUT, true), arr2("2.tmp", OUT, true), arr("arr.txt", OUT);
+	srand(time(nullptr));
 
-	arr1.push(1);
-	arr1.push(2);
-	arr2.push(3);
-	arr2.push(4);
-
-	arr.add(arr1);
-	arr.add(arr2);
-
-	arr.finalise();
+	try
+	{
+		if(argc > 1)
+		{
+			for(int i = 1; i < argc; ++i)
+			{
+				work(*(args + i));
+			}
+		}
+		else
+		{
+			work(ARRAY);
+		}
+	}
+	catch(std::exception &error)
+	{
+		std::cerr << error.what() << std::endl;
+		return 1;
+	}
 
 	return 0;
 }

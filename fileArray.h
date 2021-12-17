@@ -12,6 +12,7 @@ class FileArray final
 	Mode _mode;
 	bool _tmp;
 	size_t _size;
+	size_t _read;
 
 	void reload()noexcept;
 

@@ -3,7 +3,7 @@
 #include "fileArray.h"
 #include "exception.h"
 
-FileArray::FileArray(const std::string &name, Mode mode, bool tmp):_name(name),_mode(CLOSE),_tmp(tmp)
+FileArray::FileArray(const std::string &name, Mode mode, bool tmp):_name(name),_mode(CLOSE),_tmp(tmp),_size(0),_read(0)
 {
 	switchMode(mode);
 	reload();
@@ -42,11 +42,23 @@ void FileArray::reload()noexcept
 
 	if(switchMode(IN))
 	{
+		bool isNumber = false;
 		while(!_fs.eof())
 		{
-			int tmp;
-			_fs >> tmp;
-			++_size;
+			char c = _fs.get();
+
+			if(c == '-' || (c >= '0' && c <= '9'))
+			{
+				if(!isNumber)
+				{
+					++_size;
+					isNumber = true;
+				}
+			}
+			else if(isNumber)
+			{
+				isNumber = false;
+			}
 		}
 	}
 	switchMode(_mode);
@@ -69,7 +81,7 @@ bool FileArray::add(FileArray &that)
 
 bool FileArray::empty()const noexcept
 {
-	return _mode == IN ? _fs.eof() : !_size;
+	return _mode == IN && _size == _read;
 }
 
 Mode FileArray::mode()const noexcept
@@ -96,7 +108,10 @@ const std::string &FileArray::name()const noexcept
 
 int FileArray::next()
 {
-	switchMode(IN);
+	if(_mode != IN)
+	{
+		switchMode(IN);
+	}
 
 	if(empty())
 	{
@@ -107,6 +122,7 @@ int FileArray::next()
 	int res;
 
 	_fs >> res;
+	++_read;
 
 	return res;
 }
@@ -136,11 +152,6 @@ size_t FileArray::size()const noexcept
 }
 bool FileArray::switchMode(Mode mode)noexcept
 {
-	if(mode == _mode)
-	{
-		return true;
-	}
-
 	if(_fs.is_open())
 	{
 		_fs.close();
@@ -152,6 +163,7 @@ bool FileArray::switchMode(Mode mode)noexcept
 		{
 			case IN:
 				_fs.open(_name, std::ios::in);
+				_read = 0;
 				break;
 			case APP:
 				_fs.open(_name, std::ios::app);

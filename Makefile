@@ -1,5 +1,5 @@
 #Makefile
-objects = main.o exception.o fileArray.o
+objects = main.o create.o exception.o fileArray.o files.o sort.o work.o
 
 .PHONY: all
 all: fileSort
@@ -7,9 +7,13 @@ all: fileSort
 fileSort: ${objects}
 	gcc -o fileSort ${objects} -lstdc++
 
-main.o: fileArray.h
-fileArray.o: fileArray.h exception.h
+main.o: files.h work.h
+create.o: create.h
 exception.o: exception.h
+fileArray.o: fileArray.h exception.h
+files.o: files.h
+sort.o: sort.h
+work.o: work.h create.h sort.h
 
 .PHONY: clean
 clean:
